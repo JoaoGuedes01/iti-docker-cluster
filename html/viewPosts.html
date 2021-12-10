@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+
+  <script>
+    const domain = "http://localhost/"
+    const navigateToPage = (param) => {
+      let dest = domain + param
+      window.location.replace(dest);
+    }
+
+    const updateTable = (username, content) => {
+      placeHolder = document.getElementById('tablePlaceHolder');
+      let tableRow = document.createElement('tr');
+      tableRow.innerHTML = '<td>' + username + '</td><td>' + content + '</td>'
+      placeHolder.append(tableRow);
+
+    }
+
+    const getPosts = async () => {
+      let createPost = domain + 'getPosts'
+      const rawResponse = await fetch(createPost, {
+                method: 'GET'
+            });
+            const content = await rawResponse.json();
+            const posts = content.posts;
+            for(let i = 0; i<posts.length;i++){
+              let item = posts[i];
+              updateTable(item.username,item.content);
+            }
+    }
+
+    window.onload = getPosts
+  </script>
+
+</head>
+
+<body>
+
+  <div style=" margin: 2rem 2rem 2rem 2rem; display: flex; justify-content: center;">
+    <h1 class="display-4">Posts</h1>
+  </div>
+
+  <div style="display: flex; justify-content: center;">
+    <table style="width: 100rem;" class="table">
+      <colgroup>
+        <col span="1" style="width: 15%;">
+        <col span="1" style="width: 70%;">
+      </colgroup>
+
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Username</th>
+          <th scope="col">Content</th>
+        </tr>
+      </thead>
+      <tbody id="tablePlaceHolder">
+      </tbody>
+    </table>
+  </div>
+
+
+  <div style="display: flex; justify-content: center;">
+    <button onclick="navigateToPage('')" style="background-color: red; border-color: red;" type="button"
+      class="btn btn-primary">Voltar</button>
+  </div>
+</body>
+
+</html>
