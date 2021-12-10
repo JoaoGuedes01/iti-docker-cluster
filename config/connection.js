@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-const URI = "mongodb://localhost:27017/iti";
+const URI = "mongodb://192.168.0.104:27017/iti";
 
 
 const connectDB = async() => {
