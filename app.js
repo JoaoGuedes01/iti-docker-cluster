@@ -6,7 +6,10 @@ app.use(express.json());
 
 connectDB();
 
+let serverNumber = process.argv.slice(2)[0];
+
 app.get('/', (req, res) => {
+    res.cookie('server',serverNumber);
     res.sendFile(__dirname + '/html/index.html');
 });
 
