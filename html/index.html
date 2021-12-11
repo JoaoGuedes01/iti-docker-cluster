@@ -17,6 +17,11 @@
       let dest = 'http://'+domain +'/'+param
       window.location.replace(dest);
     }
+
+    window.onload = () => {
+      console.log("testing")
+      document.getElementById('serverNumber').innerHTML = document.cookie
+    }
   </script>
 </head>
 
@@ -31,5 +36,9 @@
       class="btn btn-primary">Ver Posts</button>
   </div>
 </body>
+
+<div style="position: absolute; bottom: 0;" id="serverNumber">
+
+</div>
 
 </html>
