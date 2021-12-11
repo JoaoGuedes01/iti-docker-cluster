@@ -13,9 +13,9 @@
         crossorigin="anonymous"></script>
 
     <script>
-        const domain = "http://localhost/"
+        const domain = window.location.host
         const navigateToPage = (param) => {
-            let dest = domain + param
+            let dest = 'http://' + domain + '/' + param
             window.location.replace(dest);
         }
 
@@ -36,7 +36,7 @@
                 username: document.getElementById('username').value,
                 content: document.getElementById('content').value
             }
-            let createPost = domain + 'createPost'
+            let createPost = 'http://'+domain + '/createPost'
             const rawResponse = await fetch(createPost, {
                 method: 'POST',
                 headers: {
