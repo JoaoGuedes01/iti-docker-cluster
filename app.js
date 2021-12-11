@@ -37,6 +37,6 @@ app.get('/getPosts',async(req,res)=>{
     });
 })
 
-app.listen(80, () => {
-    console.log("Server running in port 80");
+app.listen(3000, () => {
+    console.log("Server running in port 3000");
 })
