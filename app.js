@@ -6,10 +6,21 @@ app.use(express.json());
 
 connectDB();
 
-let serverNumber = process.argv.slice(2)[0];
+const getIP = () => {
+    var address,
+        ifaces = require('os').networkInterfaces();
+    for (var dev in ifaces) {
+        ifaces[dev].filter((details) => details.family === 'IPv4' && details.internal === false ? address = details.address : undefined);
+    }
+    return address;
+}
+
+let serverIP = getIP();
+console.log(serverIP);
+
 
 app.get('/', (req, res) => {
-    res.cookie('server',serverNumber);
+    res.cookie('server', serverIP);
     res.sendFile(__dirname + '/html/index.html');
 });
 
@@ -28,17 +39,20 @@ app.post('/createPost', async (req, res) => {
     }
     const newPost = new Post(data);
     const savedPost = await newPost.save();
-    if(!savedPost) return res.send({status:500,msg:'There was an error'});
-    return res.send({status:200,msg:'Post saved to database', post: savedPost});
+    if (!savedPost) return res.send({ status: 500, msg: 'There was an error' });
+    return res.send({ status: 200, msg: 'Post saved to database', post: savedPost });
 })
 
-app.get('/getPosts',async(req,res)=>{
+app.get('/getPosts', async (req, res) => {
     const posts = await Post.find();
 
     return res.send({
         posts: posts
     });
 })
+
+
+
 
 app.listen(3000, () => {
     console.log("Server running in port 3000");
