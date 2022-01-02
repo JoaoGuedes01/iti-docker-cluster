@@ -1,0 +1,78 @@
+version: '3'
+
+services:
+  haproxy:
+    # Imagem oficial do HAProxy
+    image: haproxy
+    container_name: haproxy
+    ports:
+      - "80:80"
+    volumes:
+      - "./haproxy:/usr/local/etc/haproxy"
+    networks:
+      # Rede docker onde estarão ligados todos os servidores geridos pelo HAProxy
+      - loadbalancer
+
+  webserver1:
+    # Imagem docker da aplicação costumizada Node.js
+    image: webserver
+    container_name: webserver1
+    ports:
+      - "3000:3000"
+    networks:
+      # Rede docker onde estarão ligados todos os servidores geridos pelo HAProxy
+      - loadbalancer
+      # Rede interna destinada à comunicação entre servidor e base de dados
+      - database
+
+  webserver2:
+    image: webserver
+    container_name: webserver2
+    ports:
+      - "3001:3000"
+    networks:
+      # Rede docker onde estarão ligados todos os servidores geridos pelo HAProxy
+      - loadbalancer
+      # Rede interna destinada à comunicação entre servidor e base de dados
+      - database
+
+  webserver3:
+    image: webserver
+    container_name: webserver3
+    ports:
+      - "3002:3000"
+    networks:
+      # Rede docker onde estarão ligados todos os servidores geridos pelo HAProxy
+      - loadbalancer
+      # Rede interna destinada à comunicação entre servidor e base de dados
+      - database
+
+  webserver4:
+    image: webserver
+    container_name: webserver4
+    ports:
+      - "3003:3000"
+    networks:
+      # Rede docker onde estarão ligados todos os servidores geridos pelo HAProxy
+      - loadbalancer
+      # Rede interna destinada à comunicação entre servidor e base de dados
+      - database
+
+  mongo:
+    # Imagem oficial do MongoDB
+    image: mongo
+    # Nome do container Mongo
+    container_name: mongo
+    ports:
+      # Porta do Host é partilhada com a porta do Mongo
+      - "27017:27017"
+    networks:
+      # Rede interna destinada à comunicação entre servidor e base de dados
+      - database
+
+# Configuração das redes Docker
+networks:
+  database:
+    external: false
+  loadbalancer:
+    external: true

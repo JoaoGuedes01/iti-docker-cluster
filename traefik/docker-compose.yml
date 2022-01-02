@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  traefik:
+    # Imagem oficial do Traefik
+    image: traefik
+    # Nome do container Traefik
+    container_name: traefik
+    # Enables the web UI and tells Traefik to listen to docker
+    command: 
+      # Disponibiliza a Web UI
+      - --api.insecure=true 
+      # Traefik monitoriza o docker para refletir mudanças com roteamentos automaticos
+      - --providers.docker
+      # Traefik apenas disponibiliza os containers com a label de "enable"
+      - --providers.docker.exposedbydefault=false
+    ports:
+      # Porta HTTP
+      - "80:80"
+      # Porta da Web UI
+      - "8080:8080"
+    networks:
+      # Rede docker onde estarão ligados todos os servidores geridos pelo Traefik
+      - loadbalancer
+    volumes:
+      # Volume necessário para o Traefik monitorizar o docker
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  webserver:
+    # Imagem docker da aplicação costumizada Node.js
+    image: webserver
+    ports:
+      - "3000"
+    deploy:
+      # Número de containers iguais a serem lançados
+      replicas: 4
+    networks:
+      # Rede docker onde estarão ligados todos os servidores geridos pelo Traefik
+      - loadbalancer
+      # Rede interna destinada à comunicação entre servidor e base de dados
+      - database
+    labels:
+      # Disponibiliza estes containers ao Traefik
+      - "traefik.enable=true"
+      # Automaticamente constrói a lógica de routing com o serviço chamado "webserver" dando a regra de url "webserver.localhost"
+      - "traefik.http.routers.webserver.rule=Host(`webserver.localhost`)"
+
+  mongo:
+    # Imagem oficial do MongoDB
+    image: mongo
+    # Nome do container Mongo
+    container_name: mongo
+    ports:
+      # Porta do Host é partilhada com a porta do Mongo
+      - "27017:27017"
+    networks:
+      # Rede interna destinada à comunicação entre servidor e base de dados
+      - database
+
+# Configuração das redes Docker
+networks:
+  loadbalancer:
+    external: true
+  database:
+    external: false
