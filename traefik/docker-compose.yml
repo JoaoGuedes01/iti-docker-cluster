@@ -20,12 +20,12 @@ services:
       # Porta da Web UI
       - "8080:8080"
     networks:
-      - traefik-global-proxy
+      - loadbalancer
     volumes:
       # Volume necessário para o Traefik monitorizar o docker
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
-      - "traefik.docker.network=traefik-global-proxy"
+      - "traefik.docker.network=loadbalancer"
 
   webserver:
     # Imagem docker da aplicação costumizada Node.js
@@ -36,14 +36,14 @@ services:
       # Número de containers iguais a serem lançados
       replicas: 4
     networks:
-      - traefik-global-proxy
+      - loadbalancer
       - backend
     labels:
       # Disponibiliza estes containers ao Traefik
       - "traefik.enable=true"
       # Automaticamente constrói a lógica de routing com o serviço chamado "webserver" dando a regra de url "webserver.localhost"
       - "traefik.http.routers.webserver.rule=Host(`webserver.localhost`)"
-      - "traefik.docker.network=traefik-global-proxy"
+      - "traefik.docker.network=loadbalancer"
 
 
   mongo:
@@ -58,7 +58,7 @@ services:
       - backend
 
 networks:
-  traefik-global-proxy:
+  loadbalancer:
     external: true
   backend:
     external: false
