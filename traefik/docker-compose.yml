@@ -20,11 +20,12 @@ services:
       # Porta da Web UI
       - "8080:8080"
     networks:
-      # Rede docker onde estarão ligados todos os servidores geridos pelo Traefik
-      - loadbalancer
+      - traefik-global-proxy
     volumes:
       # Volume necessário para o Traefik monitorizar o docker
       - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.docker.network=traefik-global-proxy"
 
   webserver:
     # Imagem docker da aplicação costumizada Node.js
@@ -35,15 +36,15 @@ services:
       # Número de containers iguais a serem lançados
       replicas: 4
     networks:
-      # Rede docker onde estarão ligados todos os servidores geridos pelo Traefik
-      - loadbalancer
-      # Rede interna destinada à comunicação entre servidor e base de dados
-      - database
+      - traefik-global-proxy
+      - backend
     labels:
       # Disponibiliza estes containers ao Traefik
       - "traefik.enable=true"
       # Automaticamente constrói a lógica de routing com o serviço chamado "webserver" dando a regra de url "webserver.localhost"
       - "traefik.http.routers.webserver.rule=Host(`webserver.localhost`)"
+      - "traefik.docker.network=traefik-global-proxy"
+
 
   mongo:
     # Imagem oficial do MongoDB
@@ -54,12 +55,10 @@ services:
       # Porta do Host é partilhada com a porta do Mongo
       - "27017:27017"
     networks:
-      # Rede interna destinada à comunicação entre servidor e base de dados
-      - database
+      - backend
 
-# Configuração das redes Docker
 networks:
-  loadbalancer:
+  traefik-global-proxy:
     external: true
-  database:
+  backend:
     external: false
