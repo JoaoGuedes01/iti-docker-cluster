@@ -7,6 +7,7 @@ services:
     container_name: haproxy
     ports:
       - "80:80"
+      - "8404:8404"
     volumes:
       - "./haproxy:/usr/local/etc/haproxy"
     networks:
@@ -52,6 +53,17 @@ services:
     container_name: webserver4
     ports:
       - "3003:3000"
+    networks:
+      # Rede docker onde estarão ligados todos os servidores geridos pelo HAProxy
+      - loadbalancer
+      # Rede interna destinada à comunicação entre servidor e base de dados
+      - database
+
+  webserver5:
+    image: webserver
+    container_name: webserver5
+    ports:
+      - "3004:3000"
     networks:
       # Rede docker onde estarão ligados todos os servidores geridos pelo HAProxy
       - loadbalancer

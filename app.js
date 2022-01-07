@@ -18,17 +18,32 @@ const getIP = () => {
 let serverIP = getIP();
 console.log(serverIP);
 
+let systemStats = {
+    "IP": serverIP,
+    "counterRaiz": 0,
+    "counterFrontendCreatePost": 0,
+    "counterFrontendPosts": 0,
+    "counterBackendCreatePost": 0,
+    "counterBackendGetPosts": 0
+}
+
+app.get('/systemStats', (req, res) => {
+    return res.send(systemStats);
+})
 
 app.get('/', (req, res) => {
     res.cookie('server', serverIP);
+    systemStats.counterRaiz += 1;
     res.sendFile(__dirname + '/html/index.html');
 });
 
 app.get('/CreatePost', (req, res) => {
+    systemStats.counterFrontendCreatePost += 1;
     res.sendFile(__dirname + '/html/createPost.html');
 });
 
 app.get('/Posts', (req, res) => {
+    systemStats.counterFrontendPosts += 1;
     res.sendFile(__dirname + '/html/viewPosts.html');
 });
 
@@ -39,13 +54,14 @@ app.post('/createPost', async (req, res) => {
     }
     const newPost = new Post(data);
     const savedPost = await newPost.save();
+    systemStats.counterBackendCreatePost += 1;
     if (!savedPost) return res.send({ status: 500, msg: 'There was an error' });
     return res.send({ status: 200, msg: 'Post saved to database', post: savedPost });
 })
 
 app.get('/getPosts', async (req, res) => {
     const posts = await Post.find();
-
+    systemStats.counterBackendGetPosts += 1;
     return res.send({
         posts: posts
     });

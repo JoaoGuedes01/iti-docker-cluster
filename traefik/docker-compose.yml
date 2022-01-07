@@ -14,6 +14,9 @@ services:
       - --providers.docker
       # Traefik apenas disponibiliza os containers com a label de "enable"
       - --providers.docker.exposedbydefault=false
+
+      - --metrics.prometheus.addserviceslabels
+
     ports:
       # Porta HTTP
       - "80:80"
@@ -34,7 +37,7 @@ services:
       - "3000"
     deploy:
       # Número de containers iguais a serem lançados
-      replicas: 4
+      replicas: 5
     networks:
       - loadbalancer
       - backend
