@@ -69,12 +69,21 @@ cd traefik / cd haproxy
 docker-compose down
 ```
 
-### Executing program
+### Interact with the Project
 
-* How to run the program
-* Step-by-step bullets
+* Correr a arquitetura com os passos anteriores
+* Deve ser possível ver todos os containers ligados
+* A dashboard do Traefik está disponível em:
 ```
-code blocks for commands
+localhost:8080
+```
+* A aplicação webserver está disponível em:
+```
+webserver.localhost
+```
+* Caso use o HaProxy a aplicação webserver está disponível em:
+```
+localhost
 ```
 
 ## Help
@@ -99,10 +108,15 @@ Whereas in Bypass policy, nothing is blocked and there are no warnings or prompt
 [João Guedes](https://github.com/JoaoGuedes01)
 
 ## Version History
-
+* 0.4
+    * Criação de um ficheiro CLI para correr mais facilmente as arquiteturas (comandos.ps1)
+* 0.3
+    * Integração configuração Compose com Traefik
+    * Integração configuração Compose com HaProxy
 * 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
+    * Suporte de Docker
+    * Integração com Mongo no Docker
+    * Ficheiro Compose
 * 0.1
     * Initial Release
 
